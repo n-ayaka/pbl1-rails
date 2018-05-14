@@ -6,6 +6,6 @@ class AttsController < ApplicationController
 
   def show
   	@atts = Attendance.joins(:user).select("attendances.*,users.*").where(id: params[:id])
-  	render json: @atts
+  	# render json: @atts
   end
 end

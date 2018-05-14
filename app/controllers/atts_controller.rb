@@ -1,7 +1,7 @@
 class AttsController < ApplicationController
   def index
   	@students = Attendance.joins(:user).select("attendances.*,users.*")
-  	render json: @students
+  	#render json: @students
   end
 
   def show

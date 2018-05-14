@@ -1,0 +1,27 @@
+<!-- テスト用コード(atts_controller.rbのindex内[render json]をコメントアウト) -->
+<h1>出席情報管理画面</h1>
+<table border="1">
+	<tr>
+		<th></th>
+		<th>1限目</th>
+		<th>2限目</th>
+		<th>3限目</th>
+		<th>4限目</th>
+		<th>5限目</th>
+		<th>登校時刻</th>
+		<th>下校時刻</th>
+	</tr>
+	<% Array(@students).each do |a| %>
+	<tr>
+		<td><a href="/atts/show/<%= a.id %>"><%= a.user_id %><br><%= a.user_name %></a></td>
+		<td><%= a.att1 %></td>
+		<td><%= a.att2 %></td>
+		<td><%= a.att3 %></td>
+		<td><%= a.att4 %></td>
+		<td><%= a.att5 %></td>
+		<td><%= a.att_time %></td>
+		<td><%= a.go_back_time %></td>
+	</tr>
+	<% end %>
+</table>
+<!-- 以上 -->

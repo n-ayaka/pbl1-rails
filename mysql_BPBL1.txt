@@ -1,0 +1,66 @@
+drop database if exists BPBL1;
+
+create database BPBL1;
+
+# ユーザー「test」にパスワード「test」を設定し、データベース「BPBL1」に対する全ての権限を付与
+grant all privileges on BPBL1.* to test@localhost identified by 'test';
+
+# データベース BPBL1 を使用
+use BPBL1;
+
+create table users(
+	id int(11) auto_increment not null primary key,
+	school_year int(4) not null,
+	user_id varchar(255) not null,
+	user_name varchar(255) not null,
+	password varchar(255) not null
+) ENGINE=InnoDB;
+
+create table attendances(
+	att_id int(11) auto_increment not null primary key,
+	id int(11) not null,
+	date date not null,
+	att1 int(1) not null,
+	att2 int(1) not null,
+	att3 int(1) not null,
+	att4 int(1) not null,
+	att5 int(1) not null,
+	att_time datetime not null,
+	go_back_time datetime not null
+) ENGINE=InnoDB;
+
+create table attdetails(
+	detail_id int(11) not null primary key,
+	detail_name varchar(255) not null
+) ENGINE=InnoDB;
+
+create table images(
+	image_id int(11) auto_increment not null primary key,
+	id int(11) not null,
+	image_time datetime not null,
+	image varchar(255) not null
+) ENGINE=InnoDB;
+
+
+insert into attdetails(detail_id, detail_name) values
+('0', '出席'),
+('1', '遅刻'),
+('2', '欠席'),
+('3', '就活'),
+('4', '病欠'),
+('5', '公欠'),
+('6', '要確認');
+
+insert into users(id,school_year,user_id,user_name,password) values
+('1', '2018', '0K01005', '塚田 敦哉', '0K01005'),
+('2', '2018', '0K01009', '村上 尚太郎', '0K01009'),
+('3', '2018', '0K01011', '山口 兼司', '0K01011'),
+('4', '2018', '0K01014', '劉 懐隆', '0K01014'),
+('5', '2018', '0K01015', '長澤 采花', '0K01015');
+
+insert into attendances(id,date,att1,att2,att3,att4,att5,att_time,go_back_time) values
+('1', '2018-05-01', '0', '0', '0', '0', '0', '2018-05-01-08-50-00', '2018-05-01-14-55-00'),
+('2', '2018-05-01', '0', '0', '5', '5', '5', '2018-05-01-09-10-00', '2018-05-01-11-15-00'),
+('3', '2018-05-01', '0', '0', '0', '0', '0', '2018-05-01-09-10-00', '2018-05-01-14-52-00'),
+('4', '2018-05-01', '1', '0', '0', '0', '3', '2018-05-01-09-30-00', '2018-05-01-13-50-00'),
+('5', '2018-05-01', '6', '6', '6', '0', '0', '2018-05-01-12-55-00', '2018-05-01-14-50-00');

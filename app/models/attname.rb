@@ -1,0 +1,2 @@
+class Attname < ApplicationRecord
+end

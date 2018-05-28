@@ -1,7 +1,7 @@
 class AttsController < ApplicationController
   def index
     # 取得する最初の日付
-    search_day = '2018-05-01'
+    search_day = params[:date]
     # search dayの月末を取得
     # end of monthを使うために一度Date型にparse -> その後string型にparse
     eom_day = (Date.parse(search_day).end_of_month).strftime
@@ -30,7 +30,7 @@ class AttsController < ApplicationController
 
   def show
     # 取得する月の日付(何日でもOK)
-    search_day = '2018-05-01'
+    search_day = params[:date]
 
     # ユーザーID(:id)から学生名を取得
     users = User.select("uid, user_id AS userId, user_name AS userName").where(uid: params[:id])
@@ -42,25 +42,41 @@ class AttsController < ApplicationController
     render json: {users: users, atnds: atnds}
   end
 
-=begin
-    if params[:id] && params[:date] && params[:period] && params[:att]
-      att = Attendance.find_by(uid: params[:id], date: params[:date]).select("att_id, uid, date, att1, att2, att3, att4, att5, att_time AS attTime, go_back_time AS goBackTime")
-      period = params[:period]
-      if period = 1
-        att.update_attribute(:att1, params[:att])
-      elsif period = 2
-        att.update_attribute(:att2, params[:att])
-      elsif period = 3
-        att.update_attribute(:att3, params[:att])
-      elsif period = 4
-        att.update_attribute(:att4, params[:att])
-      elsif period = 5
-        att.update_attribute(:att5, params[:att])
-      end
-    end
-=end
 
   def change
+    # returnするテキスト
+    re_text = 'null'
+    # 値が全て取得できたら
+    if params[:id] && params[:date] && params[:period] && params[:att]
+      # 更新する行を選択
+      att = Attendance.select("att_id, uid, date, att1, att2, att3, att4, att5, att_time AS attTime, go_back_time AS goBackTime").find_by(uid: params[:id], date: params[:date])
+      # n限目か？
+      period = params[:period]
+      # periodに応じて、該当するカラムの値を更新
+      if period = 1
+        att.update_attribute(:att1, params[:att])
+        re_text = 'att1 updated'
+      elsif period = 2
+        att.update_attribute(:att2, params[:att])
+        re_text = 'att2 updated'
+      elsif period = 3
+        att.update_attribute(:att3, params[:att])
+        re_text = 'att3 updated'
+      elsif period = 4
+        att.update_attribute(:att4, params[:att])
+        re_text = 'att4 updated'
+      elsif period = 5
+        att.update_attribute(:att5, params[:att])
+        re_text = 'att5 updated'
+      else
+        re_text = 'att update error'
+      end
+    else
+      re_text = 'get value error'
+    end
+
+    # jsonで返す
+    render json: re_text
   end
 
 end

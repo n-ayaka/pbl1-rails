@@ -48,7 +48,31 @@ class AttsController < ApplicationController
       atndsCc.push(atnd)
     end
 
-    render json: {id: user['uid'], attendanceNumber: user['attendance_number'], userName: user['user_name'], atnds: atndsCc}
+    # ここから出席率の計算
+    yesterday = Date.yesterday.strftime("%Y-%m-%d")
+
+    att = 0     # 出席(就活・公欠を含む)
+    absent = 0  # 欠席(病欠・要確認を含む)
+    late = 0    # 遅刻
+
+    # 出席
+    for num in 1..5 do
+      att = att + Attendance.where(uid: params[:student], date: ('2018-04-01')..(yesterday), ('att' + num.to_s) => [0,3,5]).size
+    end
+    # 欠席
+    for num in 1..5 do
+      absent = absent + Attendance.where(uid: params[:student], date: ('2018-04-01')..(yesterday), ('att' + num.to_s) => [2,4,6]).size
+    end
+    # 遅刻
+    for num in 1..5 do
+      late = late + Attendance.where(uid: params[:student], date: ('2018-04-01')..(yesterday), ('att' + num.to_s) => [1]).size
+    end
+
+    # 計算
+    percent = ( ((att+late)-(late/3).floor).to_f / (att+absent+late) * 100 ).round(2)
+
+
+    render json: {id: user['uid'], attendanceNumber: user['attendance_number'], userName: user['user_name'], percent: percent, atnds: atndsCc}
   end
 
 

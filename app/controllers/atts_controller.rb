@@ -1,49 +1,58 @@
 class AttsController < ApplicationController
-  def index
-    # 取得する最初の日付
-    search_day = params[:date]
-    # search dayの月末を取得
-    # end of monthを使うために一度Date型にparse -> その後string型にparse
-    eom_day = (Date.parse(search_day).end_of_month).strftime
-    # 今年度
-    s_year = '2018'
 
-    # 今年度の学生を取得
-    users = User.select("uid, user_id AS userId, user_name AS userName").where(school_year: s_year)
-    # 登校日を5件取得
-    dates = SchoolDay.where(school_flag: true, date: search_day..eom_day).select("date").limit(5).pluck(:date)
-
-    # sday:取得した登校日の1件目、lday:取得した登校日の5件目
-    sday = dates[0]
-    lday = dates[4]
-
-    # 学生ごとに出欠状況を5件ずつ取得
-    atnds = []
-    users.each do |ids|
-      atnds.push(Attendance.includes(:user).select("att_id, uid, date, att1, att2, att3, att4, att5, att_time AS attTime, go_back_time AS goBackTime").where(uid: ids, date: sday..lday).limit(5))
+  # 全員の一ヶ月分
+  def atndsAllStudents
+    usersSc = User.select('uid, user_id AS attendance_number, user_name').where(school_year: 2018)
+    usersSc = usersSc.map{ |u| u.attributes }
+    usersCc = Array.new()
+    for user in usersSc
+      user = user.map{ |k, v| [k.camelize(:lower), v] }.to_h
+      usersCc.push(user)
     end
 
-    # jsonで返す
-    render json: {users: users, atnds: atnds, dates: dates}
+    dates = SchoolDay.select('date').where(school_flag: true, date: (params[:year] + '-' + params[:month] + '-01').to_date.all_month).pluck(:date)
+
+    atndsSc = Attendance.select('att_id, uid AS user_id, date, att1 AS atnd1, att2 AS atnd2, att3 AS atnd3, att4 AS atnd4, att5 AS atnd5, att_time AS came_at, go_back_time AS leaved_at').where(date: (dates[0])..(dates[dates.length - 1]))
+    atndsSc = atndsSc.map{ |u| u.attributes }
+    atndsCc = Array.new()
+    for atnd in atndsSc
+      atnd = atnd.map{ |k, v| [k.camelize(:lower), v] }.to_h
+      atnd['cameAt'] = atnd['cameAt'].to_time.strftime("%X")
+      atnd['leavedAt'] = atnd['leavedAt'].to_time.strftime("%X")
+      atndsCc.push(atnd)
+    end
+
+    render json: {dates: dates, users: usersCc, atnds: atndsCc}
+  end
+
+  # 生徒一人の一ヶ月分
+  def atndsOneStudent
+    user = User.select('uid, user_id AS attendance_number, user_name').find_by(school_year: 2018, uid: params[:student]).attributes
+
+    dates = SchoolDay.select('date').where(school_flag: true, date: (params[:year] + '-' + params[:month] + '-01').to_date.all_month).pluck(:date)
+
+    atndsSc = Attendance.select('date, att1 AS atnd1, att2 AS atnd2, att3 AS atnd3, att4 AS atnd4, att5 AS atnd5, att_time AS came_at, go_back_time AS leaved_at')
+                .where(uid: params[:student], date: (dates[0])..(dates[dates.length - 1]))
+    atndsSc = atndsSc.map{ |u| u.attributes }
+    atndsCc = Array.new()
+    atndsSc.each_with_index do |atnd, idx|
+      atnd = atnd.map{ |k, v| [k.camelize(:lower), v] }.to_h
+      if atnd['date'] != dates[idx]
+        atndsSc.insert(idx, Hash.new()) # 添字を増やすため
+        atnd = Hash.new()
+        atnd['date'] = dates[idx]
+      elsif
+        atnd['cameAt'] = atnd['cameAt'].to_time.strftime("%X")
+        atnd['leavedAt'] = atnd['leavedAt'].to_time.strftime("%X")
+      end
+      atndsCc.push(atnd)
+    end
+
+    render json: {id: user['uid'], attendanceNumber: user['attendance_number'], userName: user['user_name'], atnds: atndsCc}
   end
 
 
-  def show
-    # 取得する月の日付(何日でもOK)
-    search_day = params[:date]
-
-    # ユーザーID(:id)から学生名を取得
-    users = User.select("uid, user_id AS userId, user_name AS userName").where(uid: params[:id])
-
-    # 学生個人の出欠状況を月すべて取得
-    atnds = Attendance.select("att_id, uid, date, att1, att2, att3, att4, att5, att_time AS attTime, go_back_time AS goBackTime").where(uid: params[:id], date: search_day.in_time_zone.all_month)
-
-    # jsonで返す
-    render json: {users: users, atnds: atnds}
-  end
-
-
-  def change
+  def atndsAttUpdate
     # returnするテキスト
     re_text = 'null'
     # 値が全て取得できたら

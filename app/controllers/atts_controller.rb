@@ -151,6 +151,8 @@ class AttsController < ApplicationController
   # 3回目以降のICカードタッチ
   def tougekouUpdate3(att_id,time)
     # todo
+    atnd = Attendance.find_by(att_id: att_id)
+    atnd.update_attribute(:go_back_time, time)
     render plain: '3回目以降のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s
   end
 

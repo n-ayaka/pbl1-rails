@@ -1,6 +1,9 @@
 class AttsController < ApplicationController
 
-  # 全員の一ヶ月分
+  # 外部からのPOSTを例外的に許可？みたいな？
+  protect_from_forgery :except => [:test]
+
+  # 全員の一ヶ月分(出欠状況管理)
   def atndsAllStudents
     usersSc = User.select('uid, user_id AS attendance_number, user_name').where(school_year: 2018)
     usersSc = usersSc.map{ |u| u.attributes }
@@ -25,11 +28,11 @@ class AttsController < ApplicationController
     render json: {dates: dates, users: usersCc, atnds: atndsCc}
   end
 
-  # 生徒一人の一ヶ月分
+  # 生徒一人の一ヶ月分(出欠状況詳細)
   def atndsOneStudent
     user = User.select('uid, user_id AS attendance_number, user_name').find_by(school_year: 2018, uid: params[:student]).attributes
 
-    dates = SchoolDay.select('date').where(school_flag: true, date: (params[:year] + '-' + params[:month] + '-01').to_date.all_month).pluck(:date)
+    dates = SchoolDay..attributesselect('date').where(school_flag: true, date: (params[:year] + '-' + params[:month] + '-01').to_date.all_month).pluck(:date)
 
     atndsSc = Attendance.select('date, att1 AS atnd1, att2 AS atnd2, att3 AS atnd3, att4 AS atnd4, att5 AS atnd5, att_time AS came_at, go_back_time AS leaved_at')
                 .where(uid: params[:student], date: (dates[0])..(dates[dates.length - 1]))
@@ -75,7 +78,7 @@ class AttsController < ApplicationController
     render json: {id: user['uid'], attendanceNumber: user['attendance_number'], userName: user['user_name'], percent: percent, atnds: atndsCc}
   end
 
-
+  # 欠席理由変更
   def atndsAttUpdate
     # returnするテキスト
     re_text = 'null'
@@ -112,4 +115,52 @@ class AttsController < ApplicationController
     render json: re_text
   end
 
+  # カードの固有IDと時間・写真のファイル名を取得
+  def getTougekouRecord
+    today = Date.today.strftime("%Y-%m-%d")
+
+    atnd = Attendance.joins(:user).select('attendances.att_id,  att_time AS came_at, go_back_time AS leaved_at, users.uid').where('attendances.date' => today, 'users.card_id' => params[:cid]).first.attributes
+
+    if atnd['came_at'] then
+      if atnd['leaved_at'] then
+        #3回目
+        tougekouUpdate3(atnd['att_id'], params[:time])
+      else
+        #2回目
+        tougekouUpdate2(atnd['att_id'], params[:time])
+      end
+    else
+      #1回目
+      tougekouUpdate1(atnd['att_id'], params[:time])
+    end
+
+  end
+
+  # 1回目のICカードタッチ
+  def tougekouUpdate1(att_id,time)
+    # todo
+    render plain: '1回目のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s
+  end
+
+  # 2回目のICカードタッチ
+  def tougekouUpdate2(att_id,time)
+    # todo
+    render plain: '2回目のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s
+  end
+
+  # 3回目以降のICカードタッチ
+  def tougekouUpdate3(att_id,time)
+    # todo
+    render plain: '3回目以降のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s
+  end
+
+
+  # pyton -> railsへのtest
+  def test
+    user = User.find_by(uid: 1)
+    user.update_attribute(:card_id, params[:cid])
+    render json: params[:cid]
+  end
+
 end
+

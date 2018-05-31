@@ -41,7 +41,7 @@ class CreateTables < ActiveRecord::Migration[5.2]
   end
 
   create_table "users", primary_key: "uid", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "card_id", null: false
+    t.string "card_id", null: false
     t.integer "school_year", null: false
     t.string "user_id", null: false
     t.string "user_name", null: false

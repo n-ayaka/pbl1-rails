@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
-  # 出席状況管理画面
-  get '/month/:year/:month' => 'atts#atndsAllStudents'
-  # 出席状況詳細画面
-  get '/month/:year/:month/student/:student' => 'atts#atndsOneStudent'
 
-  # TODO
-  # 欠席理由変更画面 変更する行のatt_id,n限目,変更後の値
-  put '/attendance/:attid/:period/:att' => 'atts#atndsAttUpdate'
+  # 出席状況管理画面
+  get '/month/:year/:month' => 'atts#atnds_all_students'
+  # 出席状況詳細画面
+  get '/month/:year/:month/student/:student' => 'atts#atnds_one_student'
+  # 欠席理由変更画面
+  put '/attendances/:student/:date' => 'atts#update_attendance'
+  #
+  post '/school-days' => 'school_days#add'
 
   # ICカードがタッチされたとき
   get '/ic/:cid' => 'atts#getTougekouRecord'

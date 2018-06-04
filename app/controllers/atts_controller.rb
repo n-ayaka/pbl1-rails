@@ -106,20 +106,25 @@ class AttsController < ApplicationController
     today = Date.today.strftime("%Y-%m-%d")
     time = Time.now.strftime("%H:%M:%S")
 
-    # 受け取ったカードの固有ID(cid)と日付(today)から該当するAttendanceテーブルの行を選択
-    atnd = Attendance.joins(:user).select('attendances.att_id,  att_time AS came_at, go_back_time AS leaved_at, users.uid').where('attendances.date' => today, 'users.card_id' => params[:cid]).first.attributes
-
-    if atnd['came_at'] then
-      if atnd['leaved_at'] then
-        # 3回目以降のICカードタッチ
-        tougekouUpdate3(atnd['att_id'], time)
-      else
-        # 2回目のICカードタッチ
-        tougekouUpdate2(atnd['att_id'], time)
-      end
+    # 該当するICカードの番号があるかチェック
+    if User.find_by(card_id: params[:cid], school_year: 2018) == nil
+      render plain: '該当するカード番号がDBに登録されていません'
     else
-      # 1回目のICカードタッチ
-      tougekouUpdate1(atnd['att_id'], time)
+      # 受け取ったカードの固有ID(cid)と日付(today)から該当するAttendanceテーブルの行を選択
+      atnd = Attendance.joins(:user).select('attendances.att_id,  att_time AS came_at, go_back_time AS leaved_at, users.uid').where('attendances.date' => today, 'users.card_id' => params[:cid], 'users.school_year' => 2018).first.attributes
+      # 登校時刻・下校時刻の有無から、何回目のICカードタッチか判断する
+      if atnd['came_at'] then
+        if atnd['leaved_at'] then
+          # 3回目以降のICカードタッチ
+          tougekouUpdate3(atnd['att_id'], time)
+        else
+          # 2回目のICカードタッチ
+          tougekouUpdate2(atnd['att_id'], time)
+        end
+      else
+        # 1回目のICカードタッチ
+        tougekouUpdate1(atnd['att_id'], time)
+      end
     end
 
   end

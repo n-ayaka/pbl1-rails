@@ -93,3 +93,8 @@ Attendance.create!(uid: 2, date: "2018-05-29", att1: 0, att2: 0, att3: 0, att4: 
 Attendance.create!(uid: 2, date: "2018-05-30", att1: 0, att2: 0, att3: 0, att4: 0, att5: 0, att_time: "08:53:11", go_back_time: "15:02:23")
 Attendance.create!(uid: 2, date: "2018-05-31", att1: 0, att2: 0, att3: 0, att4: 0, att5: 0, att_time: "08:53:11", go_back_time: "15:02:23")
 Attendance.create!(uid: 2, date: "2018-06-01", att1: 0, att2: 0, att3: 0, att4: 0, att5: 0, att_time: "08:53:11", go_back_time: "15:02:23")
+
+
+SchoolDay.create!(date: "2018-06-04", school_flag: true)
+Attendance.create!(uid: 1, date: "2018-06-04")
+Attendance.create!(uid: 2, date: "2018-06-04", att_time: "10:25:11", att1: 2, att2: 1)

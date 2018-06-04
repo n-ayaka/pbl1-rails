@@ -9,10 +9,9 @@ Rails.application.routes.draw do
   put '/attendance/:attid/:period/:att' => 'atts#atndsAttUpdate'
 
   # ICカードがタッチされたとき
-  get '/ic/:cid/:time/:iname' => 'atts#getTougekouRecord'
+  get '/ic/:cid' => 'atts#getTougekouRecord'
+  #post '/ic' => 'atts#getTougekouRecord'
 
-  #get '/ic/:cid' => 'atts#test'
   post '/ic' => 'atts#test'
-  put '/ic' => 'atts#test'
 
 end

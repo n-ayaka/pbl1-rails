@@ -20,8 +20,8 @@ class AttsController < ApplicationController
     atndsCc = Array.new()
     for atnd in atndsSc
       atnd = atnd.map{ |k, v| [k.camelize(:lower), v] }.to_h
-      atnd['cameAt'] = atnd['cameAt'].to_time.strftime("%X")
-      atnd['leavedAt'] = atnd['leavedAt'].to_time.strftime("%X")
+      atnd['cameAt'] = atnd['cameAt'].to_time.strftime("%X") if atnd['cameAt']
+      atnd['leavedAt'] = atnd['leavedAt'].to_time.strftime("%X") if atnd['leaveAt']
       atndsCc.push(atnd)
     end
 
@@ -115,42 +115,110 @@ class AttsController < ApplicationController
     render json: re_text
   end
 
-  # カードの固有IDと時間・写真のファイル名を取得
+  # カードの固有IDを取得
   def getTougekouRecord
+    # 今日の日付、現在時刻を取得
     today = Date.today.strftime("%Y-%m-%d")
+    time = Time.now.strftime("%H:%M:%S")
 
+    # 受け取ったカードの固有ID(cid)と日付(today)から該当するAttendanceテーブルの行を選択
     atnd = Attendance.joins(:user).select('attendances.att_id,  att_time AS came_at, go_back_time AS leaved_at, users.uid').where('attendances.date' => today, 'users.card_id' => params[:cid]).first.attributes
 
     if atnd['came_at'] then
       if atnd['leaved_at'] then
-        #3回目
-        tougekouUpdate3(atnd['att_id'], params[:time])
+        # 3回目以降のICカードタッチ
+        tougekouUpdate3(atnd['att_id'], time)
       else
-        #2回目
-        tougekouUpdate2(atnd['att_id'], params[:time])
+        # 2回目のICカードタッチ
+        tougekouUpdate2(atnd['att_id'], time)
       end
     else
-      #1回目
-      tougekouUpdate1(atnd['att_id'], params[:time])
+      # 1回目のICカードタッチ
+      tougekouUpdate1(atnd['att_id'], time)
     end
 
   end
 
   # 1回目のICカードタッチ
   def tougekouUpdate1(att_id,time)
-    # todo
-    render plain: '1回目のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s
+    atnd = Attendance.find_by(att_id: att_id)
+    atnd.update_attribute(:att_time, time)
+
+    # timeに応じてatt1~5の該当するものをupdate
+    if time < '09:20:00'
+      text = '遅刻欠席なし'
+    elsif time < '09:35:00'
+      text = '1限目遅刻'
+      atnd.update_attribute(:att1, '1')
+    elsif time < '10:20:00'
+      text = '1限目欠席'
+      atnd.update_attribute(:att1, '6')
+    elsif time < '10:35:00'
+      text = '1限目欠席/2限目遅刻'
+      atnd.update_attributes(att1: '6', att2: '1')
+    elsif time < '11:20:00'
+      text = '1限目欠席/2限目欠席'
+      atnd.update_attributes(att1: '6', att2: '6')
+    elsif time < '11:35:00'
+      text = '1,2限目欠席/3限目遅刻'
+      atnd.update_attributes(att1: '6', att2: '6', att3: '1')
+    elsif time < '13:00:00'
+      text = '1,2限目欠席/3限目欠席'
+      atnd.update_attributes(att1: '6', att2: '6', att3: '6')
+    elsif time < '13:15:00'
+      text = '1,2,3限目欠席/4限目遅刻'
+      atnd.update_attributes(att1: '6', att2: '6', att3: '6', att4: '1')
+    elsif time < '14:00:00'
+      text = '1,2,3限目欠席/4限目欠席'
+      atnd.update_attributes(att1: '6', att2: '6', att3: '6', att4: '6')
+    elsif time < '14:15:00'
+      text = '1,2,3,4限目欠席/5限目遅刻'
+      atnd.update_attributes(att1: '6', att2: '6', att3: '6', att4: '6', att5: '1')
+    else
+      text = '1,2,3,4限目欠席/5限目欠席'
+      atnd.update_attributes(att1: '6', att2: '6', att3: '6', att4: '6', att5: '6')
+    end
+
+    render plain: '1回目のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s + ' text:' + text.to_s
   end
 
   # 2回目のICカードタッチ
   def tougekouUpdate2(att_id,time)
-    # todo
-    render plain: '2回目のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s
+    atnd = Attendance.find_by(att_id: att_id)
+    atnd.update_attribute(:go_back_time, time)
+
+    # timeに応じてatt1~5の該当するものをupdate
+    if time >= '14:50:00'
+      text = '5限目終了後に下校'
+    elsif time >= '13:50'
+      text = '4限終了後or5限目中に下校'
+      atnd.update_attributes(att5: '6')
+    elsif time >= '12:00'
+      text = 'お昼or4限目中に下校'
+      atnd.update_attributes(att4: '6', att5: '6')
+    elsif time >= '11:10'
+      text = '2限終了後or3限目中に下校'
+      atnd.update_attributes(att3: '6', att4: '6', att5: '6')
+    elsif time >= '10:10'
+      text = '1限終了後or2限目中に下校'
+      atnd.update_attributes(att2: '6', att3: '6', att4: '6', att5: '6')
+    else
+      text = '1限目中orそれより前に下校'
+      atnd.update_attributes(att1: '6', att2: '6', att3: '6', att4: '6', att5: '6')
+    end
+
+    # nilになってるところを0に
+    atnd.update_attribute(:att1, '0') if !atnd['att1']
+    atnd.update_attribute(:att2, '0') if !atnd['att2']
+    atnd.update_attribute(:att3, '0') if !atnd['att3']
+    atnd.update_attribute(:att4, '0') if !atnd['att4']
+    atnd.update_attribute(:att5, '0') if !atnd['att5']
+
+    render plain: '2回目のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s + ' text:' + text.to_s
   end
 
   # 3回目以降のICカードタッチ
   def tougekouUpdate3(att_id,time)
-    # todo
     atnd = Attendance.find_by(att_id: att_id)
     atnd.update_attribute(:go_back_time, time)
     render plain: '3回目以降のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s

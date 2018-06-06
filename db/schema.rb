@@ -10,53 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_30_004829) do
+ActiveRecord::Schema.define(version: 2018_06_06_030234) do
 
-  create_table "attendances", primary_key: "att_id", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "uid", null: false
+  create_table "attendances", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id", null: false
     t.date "date", null: false
-    t.integer "att1"
-    t.integer "att2"
-    t.integer "att3"
-    t.integer "att4"
-    t.integer "att5"
-    t.datetime "att_time"
-    t.datetime "go_back_time"
-  end
-
-  create_table "fl_days", primary_key: "school_year", id: :integer, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.date "first1"
-    t.date "last1"
-    t.date "first2"
-    t.date "last2"
-    t.date "first3"
-    t.date "last3"
-  end
-
-  create_table "histories", primary_key: "history_id", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "uid", null: false
-    t.string "table_name", null: false
-    t.integer "table_id", null: false
-    t.datetime "history_time", null: false
-    t.string "status", null: false
-  end
-
-  create_table "images", primary_key: "image_id", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "uid", null: false
-    t.datetime "image_time", null: false
-    t.string "image", null: false
+    t.integer "atnd1"
+    t.integer "atnd2"
+    t.integer "atnd3"
+    t.integer "atnd4"
+    t.integer "atnd5"
+    t.time "come_at"
+    t.time "left_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
   create_table "school_days", primary_key: "date", id: :date, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.boolean "school_flag", default: false, null: false
+    t.boolean "school_flag", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "users", primary_key: "uid", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "card_id", null: false
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "school_year", null: false
-    t.string "user_id", null: false
+    t.integer "attendance_number", null: false
     t.string "user_name", null: false
     t.string "password", null: false
+    t.string "card_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "attendances", "users"
 end

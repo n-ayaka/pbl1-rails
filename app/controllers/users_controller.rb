@@ -7,8 +7,9 @@ class UsersController < ApplicationController
     if params[:file].present? && params[:file].original_filename && File.extname(params[:file].original_filename) == ".csv"
       # ヘッダー
       keys = [:school_year, :attendance_number, :user_name, :password, :card_id]
+
       # 一行ずつ読み込む(Excelでの作成を想定してSJIS)
-      CSV.foreach(params[:file].path, {skip_blanks: true, encoding: "SJIS"}).with_index(1) do |row, lineno|
+      CSV.parse(NKF::nkf('-w',File.read(params[:file].path))) do |row|
         # insert
         begin
           hashkeys = Hash[*keys.zip(row).flatten]

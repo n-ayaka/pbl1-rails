@@ -8,8 +8,8 @@ class UsersController < ApplicationController
       # ヘッダー
       keys = [:school_year, :attendance_number, :user_name, :password, :card_id]
 
-      # 一行ずつ読み込む(Excelでの作成を想定してSJIS)
-      CSV.parse(NKF::nkf('-w',File.read(params[:file].path))) do |row|
+      # 一行ずつ読み込む(任意の文字コード->UTF-8に書き換える)
+      CSV.parse( NKF::nkf('-w',File.read(params[:file].path)) ) do |row|
         # insert
         begin
           hashkeys = Hash[*keys.zip(row).flatten]

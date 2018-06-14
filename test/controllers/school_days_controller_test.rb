@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class AttdetailTest < ActiveSupport::TestCase
+class SchoolDaysControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end

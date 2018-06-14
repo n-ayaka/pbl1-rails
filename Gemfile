@@ -15,6 +15,10 @@ gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'therubyracer'
+gem 'bootsnap', '>= 1.1.0', require: false
+gem 'rack-cors'
+gem 'holiday_jp'
+gem 'csv'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
@@ -29,6 +33,8 @@ gem 'jbuilder', '~> 2.5'
 gem 'guard'
 gem 'guard-shell'
 gem 'fiscali'
+gem 'whenever', require: false
+gem 'activerecord-import'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
@@ -62,4 +68,16 @@ group :test do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+group :development, :test do
+  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+end
+
+group :development do
+  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'spring'
+  gem 'spring-watcher-listen', '~> 2.0.0'
+end
+
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

@@ -1,6 +1,7 @@
 require "holiday_jp"
 
 class SchoolDaysController < ApplicationController
+  protect_from_forgery :except => [:add]
   def add
 
     dates = [*(((params[:fiscalYear] + '-04-01').to_date)..(((params[:fiscalYear].to_i + 1).to_s + '-04-01').to_date)).to_a]
@@ -11,13 +12,13 @@ class SchoolDaysController < ApplicationController
               .map{ |date, bool| [date, ( bool && !(date.wday == 0 || date.wday == 6) )] }.to_h
               .map{ |date, bool| [date, ( bool && !(HolidayJp.holiday?(date)) )] }.to_h
 
-    if Day.first.blank?
+    if SchoolDay.first.blank?
       dates.each do |date, bool|
-        day = Day.new(date: date, school_flag: bool)
+        day = SchoolDay.new(date: date, school_flag: bool)
         day.save
       end
     else
-      dates.each{ |date, bool| Day.where(date: date).update(school_flag: bool) }
+      dates.each{ |date, bool| SchoolDay.where(date: date).update(school_flag: bool) }
     end
 
   end

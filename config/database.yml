@@ -49,6 +49,6 @@ test:
 #
 production:
   <<: *default
-  database: pbl1_production
+  database: BPBL1
   username: pbl1
-  password: <%= ENV['PBL1_DATABASE_PASSWORD'] %>
+  password: pbl1

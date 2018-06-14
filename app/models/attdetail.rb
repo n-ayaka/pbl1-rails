@@ -1,2 +1,0 @@
-class Attdetail < ApplicationRecord
-end

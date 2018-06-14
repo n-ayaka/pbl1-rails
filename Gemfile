@@ -18,6 +18,7 @@ gem 'therubyracer'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'rack-cors'
 gem 'holiday_jp'
+gem 'csv'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
@@ -32,6 +33,8 @@ gem 'jbuilder', '~> 2.5'
 gem 'guard'
 gem 'guard-shell'
 gem 'fiscali'
+gem 'whenever', require: false
+gem 'activerecord-import'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'

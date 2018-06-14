@@ -11,8 +11,12 @@ Rails.application.routes.draw do
 
   # ICカードがタッチされたとき
   get '/ic/:cid' => 'atts#getTougekouRecord'
-  #post '/ic' => 'atts#getTougekouRecord'
+  post '/ic' => 'atts#getTougekouRecord'
 
-  post '/ic' => 'atts#test'
+  # CSVでユーザー登録
+  post '/csv-read' => 'users#add'
+  #resources 'users', only: :add do
+  #  collection { post :add }
+  #end
 
 end

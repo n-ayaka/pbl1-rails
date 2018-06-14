@@ -6,97 +6,32 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-User.create!(school_year: 2018, attendance_number: 1, user_name: "元の木阿弥", password: "pw", card_id: "ic1")
-User.create!(school_year: 2018, attendance_number: 2, user_name: "傀儡", password: "pw", card_id: "ic2")
+require "csv"
 
-Attendance.create!(user_id: 1, date: "2018-04-27", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-01", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-02", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-07", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-#Attendance.create!(user_id: 1, date: "2018-05-08", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-09", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-10", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-11", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-14", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-15", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-16", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-17", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-18", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-21", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-22", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-23", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-24", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-25", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-28", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-29", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-30", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-05-31", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 1, date: "2018-06-01", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
+# テスト用Userテーブルデータ登録
+CSV.foreach('db/user.csv', {skip_blanks: true, encoding: "SJIS"}) do |row|
+  User.create(:school_year => row[0], :attendance_number => row[1], :user_name => row[2], :password => row[3], :card_id => row[4])
+end
 
-Attendance.create!(user_id: 2, date: "2018-04-27", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-01", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-02", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-07", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-08", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-09", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-10", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-11", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-14", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-15", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-16", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-17", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-18", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-21", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-22", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-23", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-24", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-25", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-28", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-29", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-30", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-05-31", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
-Attendance.create!(user_id: 2, date: "2018-06-01", atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
 
-Attendance.create!(user_id: 1, date: "2018-06-02")
-Attendance.create!(user_id: 1, date: "2018-06-04")
-Attendance.create!(user_id: 1, date: "2018-06-05")
-Attendance.create!(user_id: 1, date: "2018-06-06")
-Attendance.create!(user_id: 1, date: "2018-06-07")
-Attendance.create!(user_id: 1, date: "2018-06-08")
-Attendance.create!(user_id: 1, date: "2018-06-11")
-Attendance.create!(user_id: 1, date: "2018-06-12")
-Attendance.create!(user_id: 1, date: "2018-06-13")
-Attendance.create!(user_id: 1, date: "2018-06-14")
-Attendance.create!(user_id: 1, date: "2018-06-15")
-Attendance.create!(user_id: 1, date: "2018-06-18")
-Attendance.create!(user_id: 1, date: "2018-06-19")
-Attendance.create!(user_id: 1, date: "2018-06-20")
-Attendance.create!(user_id: 1, date: "2018-06-21")
-Attendance.create!(user_id: 1, date: "2018-06-22")
-Attendance.create!(user_id: 1, date: "2018-06-25")
-Attendance.create!(user_id: 1, date: "2018-06-26")
-Attendance.create!(user_id: 1, date: "2018-06-27")
-Attendance.create!(user_id: 1, date: "2018-06-28")
-Attendance.create!(user_id: 1, date: "2018-06-29")
+# テスト用Attendanceテーブルデータ登録
+apr = ['11','12','13','16','17','18','19','20','23','24','25','26','27','30']
+may = ['01','02','07','08','09','10','11','14','15','16','17','18','21','22','23','24','25','28','29','30','31']
+jun = ['04','05','06','07','08','11','12','13']
 
-Attendance.create!(user_id: 2, date: "2018-06-02")
-Attendance.create!(user_id: 2, date: "2018-06-04")
-Attendance.create!(user_id: 2, date: "2018-06-05")
-Attendance.create!(user_id: 2, date: "2018-06-06")
-Attendance.create!(user_id: 2, date: "2018-06-07")
-Attendance.create!(user_id: 2, date: "2018-06-08")
-Attendance.create!(user_id: 2, date: "2018-06-11")
-Attendance.create!(user_id: 2, date: "2018-06-12")
-Attendance.create!(user_id: 2, date: "2018-06-13")
-Attendance.create!(user_id: 2, date: "2018-06-14")
-Attendance.create!(user_id: 2, date: "2018-06-15")
-Attendance.create!(user_id: 2, date: "2018-06-18")
-Attendance.create!(user_id: 2, date: "2018-06-19")
-Attendance.create!(user_id: 2, date: "2018-06-20")
-Attendance.create!(user_id: 2, date: "2018-06-21")
-Attendance.create!(user_id: 2, date: "2018-06-22")
-Attendance.create!(user_id: 2, date: "2018-06-25")
-Attendance.create!(user_id: 2, date: "2018-06-26")
-Attendance.create!(user_id: 2, date: "2018-06-27")
-Attendance.create!(user_id: 2, date: "2018-06-28")
-Attendance.create!(user_id: 2, date: "2018-06-29")
+15.times do |id|
+  # 4月
+  apr.each do |apr|
+    Attendance.create!(user_id: "#{id+1}", date: "2018-04-"+apr, atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
+  end
+  # 5月
+  may.each do |may|
+    Attendance.create!(user_id: "#{id+1}", date: "2018-05-"+may, atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
+  end
+  # 6月
+  jun.each do |jun|
+    Attendance.create!(user_id: "#{id+1}", date: "2018-06-"+jun, atnd1: 0, atnd2: 0, atnd3: 0, atnd4: 0, atnd5: 0, come_at: "08:53:11", left_at: "15:02:23")
+  end
+
+end
+

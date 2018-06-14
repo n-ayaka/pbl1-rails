@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 2018_06_06_030234) do
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "school_year", null: false
-    t.integer "attendance_number", null: false
+    t.string "attendance_number", null: false
     t.string "user_name", null: false
     t.string "password", null: false
     t.string "card_id", null: false

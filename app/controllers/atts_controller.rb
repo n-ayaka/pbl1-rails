@@ -1,11 +1,12 @@
 class AttsController < ApplicationController
 
   # 外部からのPOSTを例外的に許可？みたいな？
+  protect_from_forgery :except => [:getTougekouRecord]
   protect_from_forgery :except => [:test]
 
   # 全員の一ヶ月分
   def atnds_all_students
-    usersSc = User.select('id, attendance_number, user_name').where(school_year: 2018)
+    usersSc = User.select('id, attendance_number, user_name').where(school_year: 2018).where.not(attendance_number: "teacher")
     usersSc = usersSc.map{ |u| u.attributes }
     usersCc = Array.new()
     for user in usersSc
@@ -35,12 +36,12 @@ class AttsController < ApplicationController
 
   # 生徒一人の一ヶ月分
   def atnds_one_student
-    user = User.select('uid, user_id AS attendance_number, user_name').find_by(school_year: 2018, uid: params[:student]).attributes
+    user = User.select('id, attendance_number, user_name').find_by(school_year: 2018, id: params[:student]).attributes
 
     dates = SchoolDay.select('date').where(school_flag: true, date: (params[:year] + '-' + params[:month] + '-01').to_date.all_month).pluck(:date)
 
-    atndsSc = Attendance.select('att_id, date, atnd1, atnd2, atnd3, atnd4, atnd5, come_at, left_at')
-                .where(uid: params[:student], date: (dates[0])..(dates[dates.length - 1])).order('date asc')
+    atndsSc = Attendance.select('id, user_id, date, atnd1, atnd2, atnd3, atnd4, atnd5, come_at, left_at')
+                .where(user_id: params[:student], date: (dates[0])..(dates[dates.length - 1])).order('date asc')
     atndsSc = atndsSc.map{ |u| u.attributes }
     atndsCc = Array.new()
     atndsSc.each_with_index do |atnd, idx|
@@ -130,7 +131,6 @@ class AttsController < ApplicationController
         tougekouUpdate1(atnd['att_id'], time)
       end
     end
-
   end
 
   # 1回目のICカードタッチ
@@ -218,12 +218,7 @@ class AttsController < ApplicationController
     render plain: '3回目以降のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s
   end
 
-
-  # pyton -> railsへのtest
   def test
-    user = User.find_by(id: 1)
-    user.update_attribute(:card_id, params[:id])
-    render json: params[:cid]
   end
 
 end

@@ -24,16 +24,16 @@ set :environment, :development
 env :PATH, ENV['PATH']
 
 # 一日のはじめにinsert
-every 1.day, at: '10:44 am' do
+every 1.day, at: '7:00 am' do
   rake "batch:to_school"
 end
 
 # 一日のおわりにnil->6
-every 1.day, at: '10:46 am' do
+every 1.day, at: '7:00 pm' do
   rake "batch:from_school"
 end
 
-# demo
-every 1.day, at: '10:45 am' do
-  rake "batch:test"
+# 自動バックアップ(一応、週1フルバックアップ)
+every :friday, at: '7:05 pm' do
+  rake "backup:dump_all"
 end

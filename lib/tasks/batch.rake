@@ -22,12 +22,4 @@ namespace :batch do
     end
   end
 
-  desc "TODO"
-  task test: :environment do
-    today = Date.today
-    Attendance.where(date: today).update_all(come_at: '09:10:00')
-    Attendance.where(user_id: '1', date: today).update_all(atnd1: '0', atnd2: '0', atnd3: '0', atnd4: '0', atnd5: '0', left_at: '14:50:00')
-    Attendance.where(user_id: '2', date: today).update_all(come_at: '09:22:00', atnd1: '1')
-  end
-
 end

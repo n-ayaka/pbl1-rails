@@ -218,8 +218,5 @@ class AttsController < ApplicationController
     render plain: '3回目以降のICカードタッチ * att_id:'+ att_id.to_s + ', time:' + time.to_s
   end
 
-  def test
-  end
-
 end
 

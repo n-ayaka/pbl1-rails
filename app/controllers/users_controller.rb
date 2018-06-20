@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   protect_from_forgery :except => [:add]
+  protect_from_forgery :except => [:backup]
   # CSVでユーザー追加(新年度登録)
   def add
     text = "仮テキスト"
@@ -27,11 +28,19 @@ class UsersController < ApplicationController
     render plain: text
   end
 
-  # ログイン判定
-  def login
+  # バックアップ関連
+  def backup
+    require 'rake'
+    Rails.application.load_tasks
+    if params[:status] == "dump"
+      Rake::Task['backup/dump_all'].execute
+      Rake::Task['backup/dump_all'].clear
+    elsif params[:status] == "restore"
+      Rake::Task['backup/restore'].execute
+      Rake::Task['backup/restore'].clear
+    else
+      #ERROR
+    end
   end
 
-  # パスワード変更
-  def update
-  end
 end

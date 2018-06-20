@@ -32,3 +32,8 @@ end
 every 1.day, at: '7:00 pm' do
   rake "batch:from_school"
 end
+
+# 自動バックアップ(一応、週1フルバックアップ)
+every :friday, at: '7:05 pm' do
+  rake "backup:dump_all"
+end

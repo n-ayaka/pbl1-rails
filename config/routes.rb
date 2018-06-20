@@ -19,4 +19,7 @@ Rails.application.routes.draw do
   #  collection { post :add }
   #end
 
+  # 任意バックアップ(dump)と復元(restore)
+  post '/backup' => 'users#backup'
+
 end
